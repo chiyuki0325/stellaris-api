@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 
 app = fastapi.FastAPI()
 
-@app.get("/")
+@app.get("/bilibili")
 async def bilicard_api(url: str):
     host = urlparse(url).netloc
     if not host.endswith("hdslb.com"):
