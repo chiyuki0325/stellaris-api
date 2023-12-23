@@ -32,10 +32,12 @@ async def bimage_api(url: str):
                 "Sec-Fetch-Site": "cross-site"
             }
         ) as response:
+            headers = response.headers
+            headers['Access-Control-Allow-Origin'] = '*'
             return fastapi.Response(
                 content=await response.read(),
                 status_code=200,
-                headers=response.headers
+                headers=headers
             )
 
 @app.get("/bvideo_info")
@@ -48,8 +50,10 @@ async def bvideo_info_api(type: str, vtype: str, id: str):
             "Referer": "https://www.bilibili.com/",
         }
     ) as response:
+        headers = response.headers
+        headers['Access-Control-Allow-Origin'] = '*'
         return fastapi.Response(
             content=await response.read(),
             status_code=200,
-            headers=response.headers
+            headers=headers
         )
