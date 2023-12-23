@@ -26,7 +26,7 @@ export default {
             }
           )
         } else {
-          return await fetch(realUrl, Object.assign({
+          const response = await fetch(realUrl, Object.assign({
             headers: {
               "Host": new URL(realUrl).host,
               "Referer": "https://www.bilibili.com/",
@@ -35,18 +35,22 @@ export default {
               "Sec-Fetch-Site": "cross-site"
             }
           }))
+          response.headers.append('Access-Control-Allow-Origin', '*')
+          return response
         }
       case "/bvideo_info":
         const type = params.get("type")
         const vtype = params.get("vtype")
         const id = params.get("id")
         const url = `https://api.bilibili.com/x/web-interface/view?${vtype}=${type == 'bv' ? id : id.slice(2)}`
-        return await fetch(url, Object.assign({
+        const response = await fetch(url, Object.assign({
           headers: {
             "Host": new URL(url).host,
             "Referer": "https://www.bilibili.com/"
           }
         }))
+        response.headers.append('Access-Control-Allow-Origin', '*')
+        return response
       default:
         return new Response(
           JSON.stringify({status: "error", code: 404, message: "Not found"}),
