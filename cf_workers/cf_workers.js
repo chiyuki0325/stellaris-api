@@ -36,6 +36,17 @@ export default {
             }
           }))
         }
+      case "/bvideo_info":
+        const type = params.get("type")
+        const vtype = params.get("vtype")
+        const id = params.get("id")
+        const url = `https://api.bilibili.com/x/web-interface/view?${vtype}=${type == 'bv' ? id : id.slice(2)}`
+        return await fetch(url, Object.assign({
+          headers: {
+            "Host": new URL(url).host,
+            "Referer": "https://www.bilibili.com/"
+          }
+        }))
       default:
         return new Response(
           JSON.stringify({status: "error", code: 404, message: "Not found"}),
