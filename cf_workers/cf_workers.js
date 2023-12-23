@@ -35,8 +35,9 @@ export default {
               "Sec-Fetch-Site": "cross-site"
             }
           }))
-          response.headers.append('Access-Control-Allow-Origin', '*')
-          return response
+          const newResponse = new Response(response.body, response)
+          newResponse.headers.set('Access-Control-Allow-Origin', '*')
+          return newResponse
         }
       case "/bvideo_info":
         const type = params.get("type")
@@ -49,8 +50,9 @@ export default {
             "Referer": "https://www.bilibili.com/"
           }
         }))
-        response.headers.append('Access-Control-Allow-Origin', '*')
-        return response
+        const newResponse = new Response(response.body, response)
+        newResponse.headers.set('Access-Control-Allow-Origin', '*')
+        return newResponse
       default:
         return new Response(
           JSON.stringify({status: "error", code: 404, message: "Not found"}),
