@@ -6,6 +6,12 @@ from urllib.parse import urlparse
 app = fastapi.FastAPI()
 
 
+def convert_headers(multidict) -> dict:
+    for key in multidict:
+        print(key)
+        return {}
+
+
 @app.get("/bilibili")
 async def bimage_api(url: str):
     host = urlparse(url).netloc
@@ -30,11 +36,12 @@ async def bimage_api(url: str):
                 "Referer": "https://www.bilibili.com/",
                 "Sec-Fetch-Dest": "image",
                 "Sec-Fetch-Mode": "no-cors",
-                "Sec-Fetch-Site": "cross-site"
+                "Sec-Fetch-Site": "cross-site",
+                "Origin": "https://www.bilibili.com",
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0"
             }
         ) as response:
-            headers = response.headers
-            headers['Access-Control-Allow-Origin'] = '*'
+            headers = convert_headers(response.headers)
             return fastapi.Response(
                 content=await response.read(),
                 status_code=200,
@@ -44,18 +51,20 @@ async def bimage_api(url: str):
 
 @app.get("/bvideo_info")
 async def bvideo_info_api(type: str, vtype: str, id: str):
-    async with aiohttp.request(
-        method="GET",
-        url=f"https://api.bilibili.com/x/web-interface/view?{vtype}={id if type == 'bv' else id[2:]}",
-        headers={
-            "Host": "api.bilibili.com",
-            "Referer": "https://www.bilibili.com/",
-        }
-    ) as response:
-        headers = response.headers
-        headers['Access-Control-Allow-Origin'] = '*'
-        return fastapi.Response(
-            content=await response.read(),
-            status_code=200,
-            headers=headers
-        )
+    async with aiohttp.ClientSession() as client:
+        async with client.request(
+            method="GET",
+            url=f"https://api.bilibili.com/x/web-interface/view?{vtype}={id if type == 'bv' else id[2:]}",
+            headers={
+                "Host": "api.bilibili.com",
+                "Referer": "https://www.bilibili.com/",
+                "Origin": "https://www.bilibili.com",
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0"
+            }
+        ) as response:
+            headers = convert_headers(response.headers)
+            return fastapi.Response(
+                content=await response.read(),
+                status_code=200,
+                headers=headers
+            )
