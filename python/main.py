@@ -7,9 +7,10 @@ app = fastapi.FastAPI()
 
 
 def convert_headers(multidict) -> dict:
+    d = {'Access-Control-Allow-Origin': '*'}
     for key in multidict:
-        print(key)
-        return {}
+        d[key] = multidict[key]
+    return d
 
 
 @app.get("/bilibili")
@@ -54,7 +55,8 @@ async def bvideo_info_api(type: str, vtype: str, id: str):
     async with aiohttp.ClientSession() as client:
         async with client.request(
             method="GET",
-            url=f"https://api.bilibili.com/x/web-interface/view?{vtype}={id if type == 'bv' else id[2:]}",
+            url=f"https://api.bilibili.com/x/web-interface/view?{
+                vtype}={id if type == 'bv' else id[2:]}",
             headers={
                 "Host": "api.bilibili.com",
                 "Referer": "https://www.bilibili.com/",
