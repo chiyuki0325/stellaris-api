@@ -11,6 +11,12 @@ def convert_headers(multidict) -> dict:
     for key in multidict:
         d[key] = multidict[key]
     d['Access-Control-Allow-Origin'] = '*'
+    for header in [
+        'Content-Encoding',
+        'Transfer-Encoding'
+    ]:
+        if header in d:
+            d.pop(header)
     return d
 
 
