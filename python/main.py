@@ -7,9 +7,10 @@ app = fastapi.FastAPI()
 
 
 def convert_headers(multidict) -> dict:
-    d = {'Access-Control-Allow-Origin': '*'}
+    d = {}
     for key in multidict:
         d[key] = multidict[key]
+    d['Access-Control-Allow-Origin'] = '*'
     return d
 
 
